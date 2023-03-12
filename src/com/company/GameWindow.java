@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.Objects;
 
 public class GameWindow extends JFrame {
 
@@ -20,10 +21,10 @@ public class GameWindow extends JFrame {
     private static int score;
 
     public static void main(String[] args) throws IOException {
-	// write your code here
-        background = ImageIO.read(GameWindow.class.getResourceAsStream("background.png"));
-        game_over = ImageIO.read(GameWindow.class.getResourceAsStream("game_over.png"));
-        drop = ImageIO.read(GameWindow.class.getResourceAsStream("drop.png"));
+        // write your code here
+        background = ImageIO.read(Objects.requireNonNull(GameWindow.class.getResourceAsStream("background.png")));
+        game_over = ImageIO.read(Objects.requireNonNull(GameWindow.class.getResourceAsStream("game_over.png")));
+        drop = ImageIO.read(Objects.requireNonNull(GameWindow.class.getResourceAsStream("drop.png")));
         game_window = new GameWindow();
         game_window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         game_window.setLocation(200, 100);
@@ -39,10 +40,10 @@ public class GameWindow extends JFrame {
                 float drop_right = drop_left + drop.getWidth(null);
                 float drop_bottom = drop_top + drop.getHeight(null);
                 boolean is_drop = x >= drop_left && x <= drop_right && y >= drop_top && y <= drop_bottom;
-                if (is_drop){
+                if (is_drop) {
                     drop_top = -100;
                     drop_left = (int) (Math.random() * (game_field.getWidth() - drop.getWidth(null)));
-                    drop_v = drop_v +20;
+                    drop_v = drop_v + 20;
                     score++;
                     game_window.setTitle("Score:  " + score);
                 }
@@ -55,33 +56,29 @@ public class GameWindow extends JFrame {
 
     }
 
-    private  static void onRepaint(Graphics g){
+    private static void onRepaint(Graphics g) {
         long current_time = System.nanoTime();
         float delta_time = (current_time - last_frame_time) * 0.000_000_001f;
         last_frame_time = current_time;
 
         drop_top = drop_top + drop_v * delta_time;
 
-        //g.fillOval(10,10,200,100);
-        //g.drawLine(200,200,400,300);
-        g.drawImage(background,0,0, null);
+        g.drawImage(background, 0, 0, null);
         g.drawImage(drop, (int) drop_left, (int) drop_top, null);
         if (drop_top > game_window.getHeight()) {
-            g.drawImage(game_over,280,120, null);
+            g.drawImage(game_over, 280, 120, null);
         }
 
     }
 
-    private static class GameField extends JPanel{
+    private static class GameField extends JPanel {
 
         @Override
-        protected void paintComponent(Graphics g){
+        protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             onRepaint(g);
             repaint();
         }
-
-
 
     }
 
